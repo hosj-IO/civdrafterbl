@@ -10,25 +10,52 @@ else if (!items.Any())
 }
 else
 {
-    <table class="table">
-        <tbody>
-        @foreach (var item in items)
-        {
-            <tr>
-                <td>@item</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <div id="Init">
+        <div class="form-group">
+            <label for="count">How many players?</label>
+            <select id="count" class="form-control" bind="@count">
+                @for (int i = 1; i <= settings.PlayerCount; i++)
+                {
+                    <option value="@i">@i</option>
+
+                }
+            </select>
+        </div> 
+        <div class="form-group">
+            <label for="CivsPerPlayers">How many Civilizations will one player receive?</label>
+            <select id="CivsPerPlayers" class="form-control">
+                @for (int i = 1; i <= settings.CivsPerPlayers; i++)
+                {
+                    <option value="@i">@i</option>
+
+                }
+            </select>
+        </div>
+        <button class="btn btn-primary" onclick="@NextOk">Next</button>
+    </div>
 }
 
 
 @functions{
+    string count = "";
     IList<string> items = new List<string>();
+    Settings settings = new Settings();
 
     protected override async Task OnInitAsync()
     {
+        settings = await Http.GetJsonAsync<Settings>("sample-data/settings.json");
         items = await Http.GetJsonAsync<List<string>>("sample-data/expansions.6.json");
+    }
+
+    class Settings
+    {
+        public int PlayerCount { get; set; }
+        public int CivsPerPlayers { get; set; }
+    }
+
+    void NextOk()
+    {
+        Console.WriteLine(count);
     }
 
 }
