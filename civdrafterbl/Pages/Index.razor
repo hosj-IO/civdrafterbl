@@ -1,0 +1,34 @@
+﻿@page "/"
+@inject HttpClient Http
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!items.Any())
+{
+    <p><em>No ToDo items exist.  Please add some.</em></p>
+}
+else
+{
+    <table class="table">
+        <tbody>
+        @foreach (var item in items)
+        {
+            <tr>
+                <td>@item</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+@functions{
+    IList<string> items = new List<string>();
+
+    protected override async Task OnInitAsync()
+    {
+        items = await Http.GetJsonAsync<List<string>>("sample-data/expansions.6.json");
+    }
+
+}
